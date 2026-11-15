@@ -87,23 +87,18 @@ const SceneMapper = () => {
       <h2>Scene Switching Settings</h2>
       <div>
         <h3>Scene Assignments</h3>
-        {fieldCount === 1 ? (
-          // Single field - just one scene assignment
-          renderSceneSelect("Scene", field1Scene, setField1Scene)
-        ) : (
-          // Multiple fields - show field 1, 2, optionally 3, and finals
-          <>
-            {renderSceneSelect("Field 1 Scene", field1Scene, setField1Scene)}
-            {renderSceneSelect("Field 2 Scene", field2Scene, setField2Scene)}
-            {fieldCount >= 3 && renderSceneSelect("Field 3 Scene", field3Scene, setField3Scene)}
-            {renderSceneSelect("Finals Scene", field0Scene, setField0Scene)}
-          </>
-        )}
+        <>
+          {renderSceneSelect("SHOW_PREVIEW", field1Scene, setField1Scene)}
+          {renderSceneSelect("SHOW_MATCH", field2Scene, setField2Scene)}
+          {renderSceneSelect("MATCH_START", field3Scene, setField3Scene)}
+          {renderSceneSelect("MATCH_POST", field0Scene, setField0Scene)}
+        </>
       </div>
       <br />
-      <div>
+      {/* <div>
         <h3>Transition Triggers</h3>
         <p>Select the events that will cause the OBS scene to switch.</p>
+        <p><strong>Warning:</strong> Don't actually change these. You'll be fired if you do</p>
         <table className="trigger-table">
           <thead>
             <tr>
@@ -202,7 +197,7 @@ const SceneMapper = () => {
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> */}
       <br />
       <div>
         Status:

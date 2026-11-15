@@ -8,6 +8,7 @@ import { ObsCall } from '../obsSetup/obsCall';
 import { startRecording } from '../obsSetup/recording';
 import { getReplayBufferLength as getReplayBufferLengthFromObs, setReplayBufferLength as setReplayBufferLengthInObs } from '../obsSetup/replayBuffer';
 import { setObsUrl as setObsUrlAction, setObsPort as setObsPortAction, setObsPassword as setObsPasswordAction, selectObsUrl, selectObsPort, selectObsPassword } from '../store/connectionSlice';
+import { UpdateType } from '../types/FtcLive';
 
 type ObsStudioProviderProps = {
   children: ReactNode;
@@ -34,7 +35,7 @@ interface ObsStudioContextData {
   // Scene names as listed in OBS (top first), kept up to date while connected.
   scenes: string[];
   switchScenes: (scene: string) => void;
-  setActiveField: (field: number) => void;
+  setActiveField: (field: UpdateType) => void;
   field0Scene?: string;
   setField0Scene: React.Dispatch<React.SetStateAction<string | undefined>>;
   field1Scene?: string;
@@ -493,33 +494,34 @@ export const ObsStudioProvider: React.FC<ObsStudioProviderProps> = ({ children }
   const switchScenes = async (scene: string) => {
     if (obs && isConnectedRef.current) {
       console.log('Switch Scenes to', scene)
-      obs.call('SetCurrentProgramScene', { sceneName: scene });
+      const currentScene = (await obs.call('GetCurrentProgramScene')).currentProgramSceneName;
+      console.log('Current scene:', currentScene);
+      if (currentScene !== scene)
+        obs.call('SetCurrentProgramScene', { sceneName: scene });
     } else {
       console.error("Unable to switch scene. Not connected");
     }
   }
 
-  const setActiveField = async (field: number) => {
+  const setActiveField = async (field: UpdateType) => {
     const field0Scene = field0SceneRef.current
     const field1Scene = field1SceneRef.current
     const field2Scene = field2SceneRef.current
     const field3Scene = field3SceneRef.current
-    if (field === 1 && field1Scene) {
+    if (field === 'SHOW_PREVIEW' && field1Scene) {
       await switchScenes(field1Scene)
-    } else if (field === 2 && field2Scene) {
+    } else if (field === 'SHOW_MATCH' && field2Scene) {
       await switchScenes(field2Scene)
-    } else if (field === 3 && field3Scene) {
+    } else if (field === 'MATCH_START' && field3Scene) {
       await switchScenes(field3Scene)
-    } else if (field === 0 && field0Scene) {
+    } else if (field === 'MATCH_POST' && field0Scene) {
       await switchScenes(field0Scene)
-    } else if (field === 0) {
-      console.log("Finals Match, manual switching required")
     } else {
-      console.error("Unable to switch stream to field ", field)
-      console.log("Field 0:", field0Scene)
-      console.log('field 1:', field1Scene)
-      console.log('field 2:', field2Scene)
-      console.log('field 3:', field3Scene)
+      console.error("Unable to switch stream with event  ", field)
+      console.log("SHOW_PREVIEW :", field0Scene)
+      console.log('SHOW_MATCH:', field1Scene)
+      console.log('MATCH_START:', field2Scene)
+      console.log('MATCH_POST:', field3Scene)
     }
   }
 

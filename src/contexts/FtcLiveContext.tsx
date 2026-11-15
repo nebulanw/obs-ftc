@@ -90,7 +90,7 @@ export const FtcLiveProvider: React.FC<FtcLiveProviderProps> = ({ children }) =>
   const [isConnected, setConnected] = useState<boolean>(false);
   const [connectionFailed, setConnectionFailed] = useState(false);
   const [socket, setSocket] = useState<WebSocket | undefined>();
-  const [transitionTriggers, setTransitionTriggers] = usePersistentState<UpdateType[]>('Selected_Trigers', ['SHOW_PREVIEW', 'SHOW_MATCH', 'SHOW_RANDOM', 'MATCH_START', 'MATCH_POST']);
+  const [transitionTriggers, setTransitionTriggers] = usePersistentState<UpdateType[]>('Selected_Trigers', ['SHOW_PREVIEW', 'SHOW_MATCH', 'MATCH_START', 'MATCH_POST']);
 
   // Auto-reconnect state
   const [isReconnecting, setIsReconnecting] = useState(false);

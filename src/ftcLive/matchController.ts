@@ -37,7 +37,7 @@ export interface MatchSettings {
 }
 
 export interface MatchActions {
-  setActiveField: (field: number) => void;
+  setActiveField: (field: UpdateType) => void;
   // Starts or stops recording; stopping returns the recording's path.
   setRecording: (start: boolean) => Promise<string | undefined>;
   // Returns the saved replay's path.
@@ -105,7 +105,7 @@ export const createMatchController = (
     actions.matchEvent(event);
 
     if (current.transitionTriggers.includes(updateType))
-      actions.setActiveField(event.payload.field);
+      actions.setActiveField(updateType);
 
     if (current.enableScreenshots) {
       if (updateType === 'SHOW_PREVIEW') screenshot(event, 'preview', current.screenshotPreviewDelay, 'previewScreenshot');
